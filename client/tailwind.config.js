@@ -5,5 +5,5 @@ export default {
     extend: {},
   },
   plugins: [],
+  safelist: [{ pattern: /^grid-cols-/ }, { pattern: /^grid-rows-/ }],
 }
-
