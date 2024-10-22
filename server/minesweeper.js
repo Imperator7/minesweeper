@@ -58,6 +58,20 @@ class Minesweeper {
       this.board[mine[1]][mine[0]].mine()
     })
   }
+
+  revealCell(row, col) {
+    const cell = this.board[row][col]
+    cell.reveal()
+    return this.board[row][col]
+  }
+
+  flagCell(row, col) {
+    const cell = this.board[row][col]
+    if (cell.isRevealed !== true) {
+      cell.flag()
+    }
+    return this.board[row][col]
+  }
 }
 
 module.exports = Minesweeper
