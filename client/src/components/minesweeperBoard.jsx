@@ -8,10 +8,10 @@ export default function Game() {
 
   const gameEndpoint = 'http://127.0.0.1:4000/'
 
-  function createRevealCellConfig(row, col) {
+  function createCellConfig(row, col, method) {
     return {
       method: 'post',
-      url: gameEndpoint,
+      url: gameEndpoint + method,
       data: {
         row,
         col,
@@ -19,12 +19,12 @@ export default function Game() {
     }
   }
 
-  async function leftClick(e) {
+  async function clickHandler(e, method) {
     const { target } = e
     const rowId = target.getAttribute('data-row-id')
     const colId = target.getAttribute('data-col-id')
 
-    const config = createRevealCellConfig(rowId, colId)
+    const config = createCellConfig(rowId, colId, method)
 
     const res = await axios(config).catch((err) => console.error(err))
 
@@ -66,10 +66,19 @@ export default function Game() {
             <button
               key={colindex}
               className="bg-gray-300 shadow-xl min-h-[50px] border border-black "
-              onClick={leftClick}
+              onClick={(e) => {
+                e.preventDefault()
+                clickHandler(e, 'reveal')
+              }}
+              onContextMenu={(e) => {
+                e.preventDefault()
+                clickHandler(e, 'flag')
+              }}
               data-row-id={rowindex}
               data-col-id={colindex}
-            ></button>
+            >
+              {cell.isRevealed}
+            </button>
           ))
         )}
       </div>
