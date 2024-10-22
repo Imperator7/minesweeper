@@ -9,9 +9,29 @@ const port = 4000
 app.use(cors())
 app.use(express.json())
 
+let game
+
 app.get('/', (req, res) => {
-  const game = new Minesweeper('easy')
+  game = new Minesweeper('easy')
   res.send(game)
+})
+
+app.post('/reveal', (req, res) => {
+  console.log(req.body)
+  // make a endpoint to handle left click or reveal function which return a hint back to it
+  // **** make a hint generator in the game class ****
+  console.log(game)
+  const revealedCell = game.revealCell(req.body['row'], req.body['col'])
+  res.json({
+    data: revealedCell,
+  })
+})
+
+app.post('/flag', (req, res) => {
+  const flaggedCell = game.flagCell(req.body['row'], req.body['col'])
+  res.json({
+    cell: flaggedCell,
+  })
 })
 
 app.listen(port, (req, res) => {
