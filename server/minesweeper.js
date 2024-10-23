@@ -4,19 +4,25 @@ class Cell {
     this.col = col
     this.isRevealed = false
     this.isFlagged = false
-    this.isMine = false
+    this._isMine = false
     this.hint = 0
   }
 
-  mine() {
-    this.isMine = true
+  set isMine(value) {
+    this._isMine = value
+  }
+
+  get isMine() {
+    return this._isMine
   }
 
   reveal() {
-    this.isRevealed = true
+    if (!this.isRevealed) {
+      this.isRevealed = true
+    }
   }
 
-  flag() {
+  toggleFlag() {
     this.isFlagged = !this.isFlagged
   }
 
@@ -78,7 +84,7 @@ class Minesweeper {
 
     points.forEach((point) => {
       let mine = JSON.parse(point)
-      this.board[mine[0]][mine[1]].mine()
+      this.board[mine[0]][mine[1]].isMine = true
     })
   }
 
@@ -113,6 +119,9 @@ class Minesweeper {
 
   revealCell(row, col) {
     const cell = this.board[row][col]
+    if (cell.isMine) {
+      return 'You lose'
+    }
     cell.reveal()
     return this.board[row][col]
   }
@@ -120,7 +129,7 @@ class Minesweeper {
   flagCell(row, col) {
     const cell = this.board[row][col]
     if (cell.isRevealed !== true) {
-      cell.flag()
+      cell.toggleFlag()
     }
     return this.board[row][col]
   }

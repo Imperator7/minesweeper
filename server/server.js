@@ -13,18 +13,29 @@ let game
 
 app.get('/', (req, res) => {
   game = new Minesweeper('easy')
-  res.send(game)
+  res.json(game)
 })
 
 app.post('/reveal', (req, res) => {
   console.log(req.body)
   // make a endpoint to handle left click or reveal function which return a hint back to it
   // **** make a hint generator in the game class ****
-  console.log(game)
   const revealedCell = game.revealCell(req.body['row'], req.body['col'])
-  res.json({
-    data: revealedCell,
-  })
+  if (!revealedCell) {
+    throw new Error(`can't reveal this cell.`)
+  }
+
+  if (revealedCell === 'You lose') {
+    res.json({
+      status: 'success',
+      data: 'You lose',
+    })
+  } else {
+    res.json({
+      status: 'success',
+      data: revealedCell,
+    })
+  }
 })
 
 app.post('/flag', (req, res) => {
