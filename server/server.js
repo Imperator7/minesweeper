@@ -25,23 +25,32 @@ app.post('/reveal', (req, res) => {
     throw new Error(`can't reveal this cell.`)
   }
 
-  if (revealedCell === 'You lose') {
+  if (revealedCell.result === 'You lose') {
     res.json({
       status: 'success',
-      data: 'You lose',
+      result: 'You lose',
+      cell: revealedCell,
     })
   } else {
     res.json({
       status: 'success',
-      data: revealedCell,
+      result: `this cell's hint is ${revealedCell.hint}`,
+      cell: { ...revealedCell, hint: revealedCell.hint },
     })
   }
 })
 
 app.post('/flag', (req, res) => {
   const flaggedCell = game.flagCell(req.body['row'], req.body['col'])
+  let cell
+  if (flaggedCell.isRevealed) {
+    cell = { ...flaggedCell, hint: flaggedCell.hint }
+  } else {
+    cell = flaggedCell
+  }
   res.json({
-    cell: flaggedCell,
+    status: 'success',
+    cell,
   })
 })
 
