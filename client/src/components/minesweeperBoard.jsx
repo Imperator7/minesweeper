@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 
 export default function Game() {
   const [data, setData] = useState(null)
+  const [flagAmount, setFlagAmount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -28,13 +29,19 @@ export default function Game() {
 
     const res = await axios(config).catch((err) => console.error(err))
 
-    console.log(res)
+    console.log(res.data.cell)
+    const updatedBoard = [...data.board]
+
+    updatedBoard[res.data.cell.row][res.data.cell.col] = res.data.cell
+
+    setData({ ...data, board: updatedBoard })
   }
 
   useEffect(() => {
     const fetch = async () => {
       try {
         const res = await axios.get(gameEndpoint)
+        console.log(res)
         setData(res.data)
       } catch (err) {
         setError(err.message)
@@ -56,11 +63,12 @@ export default function Game() {
 
   return (
     <>
-      <div>Total mines: {data.mineCount} time: 0</div>
+      <div>
+        Total mines: {data.mineCount} Total Flags: {flagAmount} time: 0
+      </div>
       <div
         className={`grid grid-cols-${data.cols} grid-rows-${data.rows} m-5 border border-black`}
       >
-        {console.log(data)}
         {data.board.map((row, rowindex) =>
           row.map((cell, colindex) => (
             <button
@@ -77,7 +85,8 @@ export default function Game() {
               data-row-id={rowindex}
               data-col-id={colindex}
             >
-              {cell.isRevealed}
+              {cell.isRevealed && cell.hint}
+              {cell.isFlagged && '🚩'}
             </button>
           ))
         )}
