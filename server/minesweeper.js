@@ -36,7 +36,6 @@ class Cell {
       col: this.col,
       isRevealed: this.isRevealed,
       isFlagged: this.isFlagged,
-      hint: this.hint,
     }
   }
 }
@@ -120,10 +119,11 @@ class Minesweeper {
   revealCell(row, col) {
     const cell = this.board[row][col]
     if (cell.isMine) {
-      return 'You lose'
+      cell.result = 'You lose'
+      return cell
     }
     cell.reveal()
-    return this.board[row][col]
+    return cell
   }
 
   flagCell(row, col) {
@@ -131,7 +131,7 @@ class Minesweeper {
     if (cell.isRevealed !== true) {
       cell.toggleFlag()
     }
-    return this.board[row][col]
+    return cell
   }
 
   toJSON() {
