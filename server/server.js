@@ -17,7 +17,6 @@ app.get('/', (req, res) => {
 })
 
 app.post('/reveal', (req, res) => {
-  console.log(req.body)
   // make a endpoint to handle left click or reveal function which return a hint back to it
   // **** make a hint generator in the game class ****
   const revealedCell = game.revealCell(req.body['row'], req.body['col'])
@@ -28,8 +27,8 @@ app.post('/reveal', (req, res) => {
   if (revealedCell.result === 'You lose') {
     res.json({
       status: 'success',
-      result: 'You lose',
-      cell: revealedCell,
+      result: 'You found a bomb, please try again.',
+      cell: { ...revealedCell, isMine: revealedCell.isMine },
     })
   } else {
     res.json({

@@ -32,15 +32,14 @@ export default function Game() {
     if (method === 'flag') {
       const cell = data.board[rowId][colId]
       if (cell.isRevealed) return
-
+      if (cell.isMine) return
       if (!cell.isFlagged) {
         setFlagAmount((prev) => prev + 1)
       } else {
         setFlagAmount((prev) => prev - 1)
       }
-    } else {
-      console.log('reveal')
     }
+    console.log(res.data.cell)
 
     const updatedBoard = [...data.board]
 
@@ -97,6 +96,7 @@ export default function Game() {
               data-row-id={rowindex}
               data-col-id={colindex}
             >
+              {cell.isMine && '💣'}
               {cell.isRevealed && cell.hint}
               {cell.isFlagged && '🚩'}
             </button>
