@@ -29,7 +29,19 @@ export default function Game() {
 
     const res = await axios(config).catch((err) => console.error(err))
 
-    console.log(res.data.cell)
+    if (method === 'flag') {
+      const cell = data.board[rowId][colId]
+      if (cell.isRevealed) return
+
+      if (!cell.isFlagged) {
+        setFlagAmount((prev) => prev + 1)
+      } else {
+        setFlagAmount((prev) => prev - 1)
+      }
+    } else {
+      console.log('reveal')
+    }
+
     const updatedBoard = [...data.board]
 
     updatedBoard[res.data.cell.row][res.data.cell.col] = res.data.cell
