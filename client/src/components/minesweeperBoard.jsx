@@ -43,7 +43,9 @@ export default function Game() {
 
     const updatedBoard = [...data.board]
 
-    updatedBoard[res.data.cell.row][res.data.cell.col] = res.data.cell
+    for (let nCell of res.data.cell) {
+      updatedBoard[nCell.row][nCell.col] = nCell
+    }
 
     setData({ ...data, board: updatedBoard })
   }

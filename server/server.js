@@ -24,17 +24,24 @@ app.post('/reveal', (req, res) => {
     throw new Error(`can't reveal this cell.`)
   }
 
+  // for mine cell gonna return only one cell.
   if (revealedCell.result === 'You lose') {
     res.json({
       status: 'success',
       result: 'You found a bomb, please try again.',
-      cell: { ...revealedCell, isMine: revealedCell.isMine },
+      cell: [{ ...revealedCell, isMine: revealedCell.isMine }],
     })
   } else {
+    // for hint cells might have many cells in form of array
+    const cells = []
+    for (let cell of revealedCell) {
+      cells.push({ ...cell, hint: cell.hint })
+    }
+    console.log(cells)
     res.json({
       status: 'success',
       result: `this cell's hint is ${revealedCell.hint}`,
-      cell: { ...revealedCell, hint: revealedCell.hint },
+      cell: cells,
     })
   }
 })
