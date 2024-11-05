@@ -25,9 +25,6 @@ export default function Game() {
     const rowId = target.getAttribute('data-row-id')
     const colId = target.getAttribute('data-col-id')
 
-    if (data.board[rowId][colId].isFlagged && method === 'reveal') {
-      return
-    }
     const config = createCellConfig(rowId, colId, method)
 
     const res = await axios(config).catch((err) => console.error(err))
@@ -42,14 +39,13 @@ export default function Game() {
         setFlagAmount((prev) => prev - 1)
       }
     }
+    console.log(res.data.cell)
 
-    const updatedBoard = data.board.map((row) =>
-      row.map((cell) => ({ ...cell }))
-    )
+    const updatedBoard = [...data.board]
 
-    res.data.cell.forEach((nCell) => {
-      updatedBoard[nCell.row][nCell.col] = { ...nCell, updateKey: Date.now() }
-    })
+    for (let nCell of res.data.cell) {
+      updatedBoard[nCell.row][nCell.col] = nCell
+    }
 
     setData({ ...data, board: updatedBoard })
   }
@@ -89,7 +85,7 @@ export default function Game() {
         {data.board.map((row, rowindex) =>
           row.map((cell, colindex) => (
             <button
-              key={`${rowindex}-${colindex}-${cell.updateKey || 'initial'}`}
+              key={colindex}
               className="bg-gray-300 shadow-xl min-h-[50px] border border-black "
               onClick={(e) => {
                 e.preventDefault()
